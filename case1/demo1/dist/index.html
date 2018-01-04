@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        webpack.config.js  配置文件的基本配置
+        //多入口打包
+        var path=require('path');
+        module.exports={
+            entry:{
+                bundle:'./src/entry.js',
+                bundle2:"./src/entry2.js"
+            }, //入口
+            output:{
+                path:path.resolve(__dirname,'dist'),
+                filename:"[name].js"
+            },//出口
+            module:{},
+            plugins:[],//插件
+            devServer:{}//服务
+        }
+    </pre>
+    <div id="title"></div>
+</body>
+<script src="./bundle.js"></script>
+<script src="./bundle2.js"></script>
+</html>

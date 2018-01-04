@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <p>服务器和热更新</p>
+    <pre>
+            var path=require('path');
+            module.exports={
+                entry:{
+                    base:"./src/1.js",
+                    home:"./src/2.js"
+                },
+                output:{
+                    path:path.resolve(__dirname,'dist'),
+                    filename:"[name].js"    
+                },
+                devServer:{
+                    contentBase:path.resolve(__dirname,'dist'),//监听目录 使用绝对路径，配合开发减少路径bug
+                    host:"192.168.1.103",//服务ip 可以用ipconfig查看ip
+                    compress:true,//服务器压缩
+                    port:4399
+                }
+            }
+    </pre>
+    <p>需要安装开发环境依赖：cnpm i --save-dev webpack-dev-server  webpack</p>
+    <p>依赖安装完毕后，需要在package.json文件里的scripts里写入启动命令： ‘server’:"webpack-dev-server" 控制台运行命令：npm run server就可以使用热更新服务器了，不过3.6版本下的不可以，当然我也不学低版本了，当前我学的是3.6用的是3.10</p>
+    <p>其实这个server服务，只是在内存中进行了更新，对本地文件并没有打包</p>
+    
+    <script src="./base.js"></script>
+    <script src="./home.js"></script>
+</body>
+</html>

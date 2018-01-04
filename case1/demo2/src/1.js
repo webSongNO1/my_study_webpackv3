@@ -1,0 +1,1 @@
+document.write("我是1.js生成的内容");
