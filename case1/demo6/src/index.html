@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+    css里的图片处理需要依赖 file-loader url-loader 但是引入只需要引入url-loader就行
+    这里遇到了一个无法逾越的坑，当然了，最后我还是非常逼格的解决了。
+    看看都安装了哪些依赖吧
+    </pre>
+    <pre>
+        "devDependencies": {
+            "css-loader": "^0.28.8",
+            "file-loader": "^1.1.6",
+            "html-webpack-plugin": "^2.30.1",
+            "style-loader": "^0.19.1",
+            "url-loader": "^0.6.2",
+            "webpack": "^3.10.0"
+          }
+    </pre>
+    <pre>
+        初始项目不建立dist文件夹，只要布局src文件夹就好。
+        解读webpack.config.js：
+        /*
+            引入插件，一个是node的路径插件，一个是webpack打包发布html插件
+        */
+var path=require("path");            
+var htmlPlugin=require("html-webpack-plugin");
+
+module.exports={
+    entry:"./src/entry.js",
+    output:{
+        path:path.resolve(__dirname,"dist"),  //这里是出口路径，也是这里的所有文件默认的主路径
+        filename:"js/index.js"  //js单独配置一个路径在js文件夹下
+    },
+    module:{
+        rules:[
+            {
+                test:/\.css$/,
+                use:["style-loader","css-loader"]   //css处理
+            },
+            {
+                test:/\.(png|jpg|gif)/,
+                use:[{
+                    loader:"url-loader",            //图片处理，下面的参数设置里outputPath路径将图片打包到img里也是基于dist的。
+                 options:{
+                        limit:5000, //如果大于5000kb就拷贝过去，如果小于，就以base64生成                        
+                        outputPath:"img/"
+                    }
+                    
+                }]
+            }
+        ]
+    },
+    plugins:[
+        new htmlPlugin({             //打包发布html模板，很显然，webpack很智能的将样式和js插入到模板里生成了生成版本
+            minify:{
+                //removeAttributeQuotes:true   //一个小坑，可能是我还没找到方法，如果html里含有js代码，那么这个命令就不能打开，否则很可怕。
+            },
+            hash:true,
+            template:"./src/index.html",
+            filename:path.resolve(__dirname,'dist/index.html')
+        })
+    ]
+}
+    </pre>
+
+</body>
+</html>

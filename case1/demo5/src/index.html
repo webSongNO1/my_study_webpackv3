@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+        <pre>
+            打包html需要安装插件：html-webpack-plugin
+            引入后，需要在plugins里配置，详细的还是要看官网说明。；
+            webpack.config.js:
+const path=require("path");
+const htmlPlugin=require("html-webpack-plugin");
+module.exports={
+    entry:"./src/entry.js",
+    output:{
+        path:path.resolve(__dirname,'dist/js'),
+        filename:"index.js"
+    },
+    module:{
+        rules:[
+            {test:/\.css$/,use:['style-loader','css-loader']}
+        ]
+    },
+    plugins:[
+        new  htmlPlugin({
+            <!-- minify:{
+                removeAttributeQuotes:true //把标签里的引号去掉了
+            }, -->
+            minify:{
+                removeAttributeQuotes:true //把标签里的引号去掉了
+            },
+            hash:true,//清理缓存
+            template:"./src/index.html", //模板文件
+            filename:path.resolve(__dirname,'dist/index.html') //指定生成的文件地址
+        })
+    ],
+    devServer:{
+        contentBase:path.resolve(__dirname,"dist"),
+        host:"localhost",
+        compress:true,
+        port:4399
+    }
+}
+        </pre>
+    <div id="title"></div>
+</body>
+</html>
