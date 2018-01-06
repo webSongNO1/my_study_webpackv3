@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="box"></div><br>
+    <div class="img">
+        <img src="./img/123.jpg" alt="">
+    </div>
+    <pre>
+    *:如何让npm run server命令直接在浏览器自动打开：在package.json scripts写入："server":"webpack-dev-server --open"
+    这次是打包分离less，需要安装less
+    cnpm i --save-dev less less-loader
+    1.先来个不分离的打包less：
+    安装好了之后，也创建引入了less文件，开始配置webpack.config.js文件了。    
+    </pre>
+    <pre>
+            {
+                test:/\.less$/,
+                use:[{
+                    loader:"style-loader"
+                },{
+                    loader:"css-loader"
+                },{
+                    loader:"less-loader"
+                }]
+            }
+            运行打包：webpack 查看效果：npm run server
+    </pre>
+    <pre>
+        //这是分离出来
+                use:extractTextPlugin.extract({
+                    use:[
+                        {loader:"css-loader"},
+                        {loader:"less-loader"}
+                    ],
+                    fallback:"style-loader"
+                })
+    </pre>
+    <div class="less"></div>
+</body>
+</html>

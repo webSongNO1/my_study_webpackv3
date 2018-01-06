@@ -29,10 +29,30 @@ module.exports={
                         loader:"url-loader",
                         options:{
                             limit:5000, //如果大于5000kb就拷贝过去，如果小于，就以base64生成                        
-                            outputPath:"img/" //对css中图片地址的指定处理
+                            outputPath:"img/"
                         }
                     }
                 ]
+            },{
+                test:/\.(htm|html)$/, //处理html里的图片
+                use:["html-withimg-loader"]
+            },{
+                test:/\.less$/,
+                /* use:[{ //这就是单纯打包
+                    loader:"style-loader"
+                },{
+                    loader:"css-loader"
+                },{
+                    loader:"less-loader"
+                }] */
+                //这是分离出来
+                use:extractTextPlugin.extract({
+                    use:[
+                        {loader:"css-loader"},
+                        {loader:"less-loader"}
+                    ],
+                    fallback:"style-loader"
+                })
             }
         ]
     },

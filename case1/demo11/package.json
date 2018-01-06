@@ -1,10 +1,10 @@
 {
-  "name": "demo7",
+  "name": "clearcss",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "webpack-dev-server",
+    "s": "webpack-dev-server --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,10 +12,11 @@
   "devDependencies": {
     "css-loader": "^0.28.8",
     "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^1.1.6",
     "html-webpack-plugin": "^2.30.1",
+    "purify-css": "^1.2.5",
+    "purifycss-webpack": "^0.7.0",
     "style-loader": "^0.19.1",
-    "url-loader": "^0.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.0"
   }
 }

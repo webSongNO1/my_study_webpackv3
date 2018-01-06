@@ -7,66 +7,75 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="box"></div><br>
     <pre>
-    css里的图片处理需要依赖 file-loader url-loader 但是引入只需要引入url-loader就行
-    这里遇到了一个无法逾越的坑，当然了，最后我还是非常逼格的解决了。
-    看看都安装了哪些依赖吧
+        紧跟上一个实例，这次是将css分离出来，很是蛋疼对不对。然而更蛋疼是里面的图片。
+        我们可以在css-loader里配置图片大小限制，如果小于500000就把图片以base64形式打包。
+        然而很多时候我们的图片还是要跟着路径一起打包过来，那么这时候就出问题了，没错，路径。
     </pre>
     <pre>
-        "devDependencies": {
-            "css-loader": "^0.28.8",
-            "file-loader": "^1.1.6",
-            "html-webpack-plugin": "^2.30.1",
-            "style-loader": "^0.19.1",
-            "url-loader": "^0.6.2",
-            "webpack": "^3.10.0"
-          }
+        分离css要用到“extract-text-webpack-plugin”然后配置两个地方：一个就当然是plugins另一个就是css-loader
+        开始解读webpack.config.js吧！
     </pre>
     <pre>
-        初始项目不建立dist文件夹，只要布局src文件夹就好。
-        解读webpack.config.js：
-        /*
-            引入插件，一个是node的路径插件，一个是webpack打包发布html插件
-        */
-var path=require("path");            
-var htmlPlugin=require("html-webpack-plugin");
-
-module.exports={
-    entry:"./src/entry.js",
-    output:{
-        path:path.resolve(__dirname,"dist"),  //这里是出口路径，也是这里的所有文件默认的主路径
-        filename:"js/index.js"  //js单独配置一个路径在js文件夹下
-    },
-    module:{
-        rules:[
-            {
-                test:/\.css$/,
-                use:["style-loader","css-loader"]   //css处理
-            },
-            {
-                test:/\.(png|jpg|gif)/,
-                use:[{
-                    loader:"url-loader",            //图片处理，下面的参数设置里outputPath路径将图片打包到img里也是基于dist的。
-                 options:{
-                        limit:5000, //如果大于5000kb就拷贝过去，如果小于，就以base64生成                        
-                        outputPath:"img/"
-                    }
-                    
-                }]
+            const path=require("path"); //node路径模块
+            const webpack=require('webpack'); //项目webpack，一些插件依赖本地webpack所以安装，nglifyjs用来初始js压缩的，这里没用到。
+            const htmlPlugin=require("html-webpack-plugin");//打包html，需要安装
+            const extractTextPlugin=require("extract-text-webpack-plugin");//分离css，需要安装
+            
+            //一个绝对路径配置，说明的地方在于，本地预览是不可以的，只能通过虚拟服务器看了
+            //它的好处就是解决了css分离后的图片路径问题。
+            //需要注意的是，如果是用的webpack-dev-server那么这个路径要保持一致，还有端口也是。
+            //路径最后一定要加/
+            var website={
+                publicPath:"http://localhost:8080/"
             }
-        ]
-    },
-    plugins:[
-        new htmlPlugin({             //打包发布html模板，很显然，webpack很智能的将样式和js插入到模板里生成了生成版本
-            minify:{
-                //removeAttributeQuotes:true   //一个小坑，可能是我还没找到方法，如果html里含有js代码，那么这个命令就不能打开，否则很可怕。
-            },
-            hash:true,
-            template:"./src/index.html",
-            filename:path.resolve(__dirname,'dist/index.html')
-        })
-    ]
-}
+            module.exports={
+                entry:"./src/entry.js", //入口文件
+                output:{
+                    path:path.resolve(__dirname,"dist"), //出口目录
+                    filename:"js/index.js", //出口文件，所有资源通过这一个js文件给与html渲染
+                    publicPath:website.publicPath//公用路径，处理图片的，也可以理解为绝对的路径
+                },
+                module:{
+                    rules:[
+                        {
+                            test:/\.css$/,
+                            use: extractTextPlugin.extract({ //分离处理css
+                                fallback: "style-loader",
+                                use: "css-loader"
+                            })
+                        },{
+                            test:/\.(png|jpg|gif)/,
+                            use:[
+                                {
+                                    loader:"url-loader",
+                                    options:{
+                                        limit:5000, //如果大于5000kb就拷贝过去，如果小于，就以base64生成                        
+                                        outputPath:"img/"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                plugins:[
+                    new htmlPlugin({
+                        minify:{
+                            removeAttributeQuotes:true
+                        },
+                        hash:true,
+                        template:"./src/index.html"
+                    }),
+                    new extractTextPlugin("/css/index.css") //打包出来的路径，自行脑补公共路径+此路径=绝对路径
+                ],
+                devServer:{
+                    contentBase:path.resolve(__dirname,'dist'),//服务器监听渲染的目录
+                    host:'localhost',//服务器地址
+                    compress:true,//服务器压缩
+                    port:8080//端口【这里的地址+端口要和公共地址一致！！！】
+                }
+            }
     </pre>
 
 </body>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        给css加前缀需要安装：
+        postcss-loader autoprefixer
+        要在根目录和webpack.config.js同级
+        建立一个postcss.config.js
+        写入配置：
+        module.exports={
+            pulgins:[
+                reqiue('autoprefixer')
+            ]
+        }
+        webpack.config.js配置：
+        在css-loader和less-loader里分别配置
+        加入postcss-loader
+    </pre>
+    <pre>
+        发现一个问题。本来全局出口路径publicPath是为了配合url-loader处理css中图片路径的，但是，如果没有图片，那么就需要在全局地址后面手动加上生产路径
+        解读webpack.config.js：
+    </pre>
+    <pre>
+const path=require("path");//node路径模块
+const htmlPlugin=require("html-webpack-plugin");//打包html插件
+const extractTextPlugin=require("extract-text-webpack-plugin"); //分离css插件
+var web={
+    publicPath:"http://localhost:8080/dist/" //全局地址，因为这里没有url-loader所以要手动加上输出地址目录dist
+}
+module.exports={
+    entry:"./src/entry.js",
+    output:{
+        path:path.resolve(__dirname,"dist"),
+        filename:"js/index.js",
+        publicPath:web.publicPath
+    },
+    module:{
+        rules:[
+            {
+                test:/\.css$/,
+                use: extractTextPlugin.extract({ //分离处理css
+                    fallback: "style-loader",
+                    use: ["css-loader","postcss-loader"] //给css加前缀
+                })
+            },
+            {
+                test:/\.less$/,
+                /* use:[{ //这就是单纯打包
+                    loader:"style-loader"
+                },{
+                    loader:"css-loader"
+                },{
+                    loader:"less-loader"
+                }] */
+                //这是分离出来
+                use:extractTextPlugin.extract({
+                    use:[
+                        {loader:"css-loader"},
+                        {loader:"less-loader"},
+                        {loader:"postcss-loader"} //给less加前缀
+                    ],
+                    fallback:"style-loader"
+                })
+            }
+        ]
+    },
+    plugins:[
+        new htmlPlugin({
+            hash:true,//清理缓存
+            template:"./src/index.html",
+           // filename:path.resolve(__dirname,'dist/mlgb.html') //重命名打包的html
+        }),
+        new extractTextPlugin("css/index.css") //分离出来的css路径和名称
+    ],
+    devServer:{
+        contentBase:path.resolve(__dirname,'dist'),
+        host:'localhost',
+        compress:true,
+        port:8080
+    }
+}
+    </pre>
+    <div class="box"></div>
+</body>
+</html>

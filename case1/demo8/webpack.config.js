@@ -29,10 +29,13 @@ module.exports={
                         loader:"url-loader",
                         options:{
                             limit:5000, //如果大于5000kb就拷贝过去，如果小于，就以base64生成                        
-                            outputPath:"img/" //对css中图片地址的指定处理
+                            outputPath:"img/"
                         }
                     }
                 ]
+            },{
+                test:/\.(htm|html)$/,
+                use:["html-withimg-loader"]
             }
         ]
     },

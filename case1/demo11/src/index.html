@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        使用purifycss-webpack purify-css插件清除没有用的css，需要依赖extract-text-webpack-plugin分离css插件，不然会出错哦
+        首先引入node的glob模块：全局，用来异步读取文件的
+        const glob=require('glob');
+        这里只是在plugins里配置：
+        new purifyCssPulgin({
+            paths:glob.sync(path.join(__dirname,"src/*.html"))//搜索src目录下的所有html，筛选没有用的css，之类必须配合css打包分离插件才可以使用            
+        })
+    </pre>
+</body>
+</html>
