@@ -17,7 +17,7 @@ module.exports={
                 test:/\.css$/,
                 use: extractTextPlugin.extract({ //分离处理css
                     fallback: "style-loader",
-                    use: ["css-loader","postcss-loader"]
+                    use: ["css-loader","postcss-loader"]//加前缀
                 })
             },
             {
