@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="box">{{msg}}</div>
+    <pre>
+            import引入方法：引用后不管你在代码中使用不适用该类库，都会把该类库打包起来，这样有时就会让代码产生冗余。
+            ProvidePlugin引入方法：引用后只有在类库使用时，才按需进行打包，所以建议在工作使用插件的方式进行引入。
+    </pre>
+    <pre>
+        基于此，我们是用webpack全局引用第三方插件
+1.抽离JQuery
+
+上边的方法只是优化的第一步，工作中你会发现，不适用的类库几乎我们也不会引入，所以上边只是一个必要操作的第一步。那往往把第三方类库抽离出来，才是最好的解决方法。
+
+第一步：修改入口文件
+
+抽离的第一步是修改入口文件，把我们的JQuery也加入到入口文件中，看下面的代码。
+
+webpack.config.js
+
+
+ entry:{
+        entry:'./src/entry.js',
+        jquery:'jquery'
+ },
+ 第二步：引入插件
+
+ 我们需要引入optimize优化插件，插件里边是需要配置的，具体配置项看下面的代码。
+ new webpack.optimize.CommonsChunkPlugin({
+    //name对应入口文件中的名字，我们起的是jQuery
+    name:'jquery',
+    //把文件打包到哪里，是一个路径
+    filename:"assets/js/jquery.min.js",
+    //最小打包的文件模块数，这里直接写2就好
+    minChunks:2
+}),
+minChunks一般都是固定配置，但是不写是不行的，你会打包失败。
+
+filename是可以省略的，这是直接打包到了打包根目录下，我们这里直接打包到了dist文件夹下边。
+
+配置完成后，我们可以先删掉以前打包的dist目录，然后用webpack再次打包，你会发现jquery被抽离了出来，并且我们的entry.js文件变的很小。
+    </pre>
+    <pre>
+            多个第三方类库抽离【vue在这里不能这样使用，会报错的！】
+
+            会了如何抽离Jquery，但是在实际开发中，我们会引用不止一个第三方类库，这时也需要抽离。我们拿引入Vue为例，看看如何抽离出来。
+            1.entry:{
+                entry:'./src/entry.js',
+                jquery:'jquery',
+                vue:'vue'
+            },
+            2.修改CommonsChunkPlugin配置
+            new webpack.optimize.CommonsChunkPlugin({
+                //name对应入口文件中的名字，我们起的是jQuery
+                name:['jquery','vue'],
+                //把文件打包到哪里，是一个路径
+                filename:"assets/js/[name].js",
+                //最小打包的文件模块数，这里直接写2就好
+                minChunks:2
+            }),
+            第一个是在name属性里把原来的字符串改为数组，因为我们要引入多个模块，所以是数组；
+第二个是在filename属性中把我们输出的文件名改为匹配付[name],这项操作就是打包出来的名字跟随我们打包前的模块。
+    </pre>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>拷贝静态资源到指定位置：</h1>
+    <pre>
+        cnpm i -D copy-webpack-plugin
+        1.webpack.config.js配置：
+        new copyWebPackPlugin([{
+            from:__dirname+'/src',
+            to:'./public'
+        }])
+        它的作用和gulp的管道流很像，就是一个拷贝。
+    </pre>
+</body>
+</html>

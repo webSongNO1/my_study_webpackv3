@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>react全家桶</title>
+</head>
+<body>
+    <pre>
+        一个基础的打包，即便开启了热更新服务，也不会及时更新。
+        这需要配置两个地方：
+        1.在出口配置：
+            publicPath:'temp/' //相当于是从内存中读取文件
+        2.在index.html中引入js也要从temp：
+            src="./temp/index.js"
+    </pre>
+    <div id="app"></div>
+</body>
+<script src="./temp/index.js"></script>
+</html>

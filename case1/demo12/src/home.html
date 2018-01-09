@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        label{display: block;}
+    </style>
+</head>
+<body>
+    <form action="#">
+        <label>
+            <span>账户：</span> <input type="text">
+        </label>
+        <label>
+            <span>密码：</span> <input type="password">
+        </label>
+        <label>
+            <button type="button">提交</button>
+        </label>
+    </form>
+    <pre>
+        *以前的es2015已经过时了，现在用的是最新的babel-preset-env。
+        1.首先安装依赖
+        cnpm i -D webpack babel-core babel-preset-env babel-loader
+        2.webpack.config.js配置
+        {
+            test:/\.js$/,
+            use:{loader:'babel-loader'},
+            exclude:/node_modules/ //不转换的文件夹，必须写。
+        }
+        3.根目录建立 .babelrc文件
+        {
+            "presets": [
+                "env"
+            ]
+        }
+        4.结束
+    </pre>
+</body>
+</html>

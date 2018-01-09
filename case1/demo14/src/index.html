@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    如果只安装生产环境里的依赖包：cnpm i --production
+    并行开发：生产和开发环境
+    1.package.json文件配置：
+    "scripts": {
+        "dev":"set type=dev&webpack",
+        "build":"set type=build&webpack",
+        "server":"webpack-dev-server --open",
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+    2.webpack.config.js配置：
+    if(process.env.type=='build'){//node接受到这个值，根据不同命令打包不同环境
+        //生成环境
+        var website={
+            pblicPtha:"http://192.168.1.28:4399/dist/"
+        }
+        }else if(process.env.type=='dev'){
+            //开发环境
+            var website={
+                pblicPtha:"http://localhost:4399/dist/"
+            }
+        }else{
+            //默认开发环境，给热更新用的，不然会错。妈蛋的。
+            var website={
+                pblicPtha:"http://localhost:4399/dist/"
+            }
+        }        
+</body>
+</html>
